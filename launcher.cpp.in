@@ -13,6 +13,7 @@
  *            LICENSE
  */
 #include "sha.h"
+#include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -65,14 +66,14 @@ void Check_Hash()
     if (strcmp(EXE_HASH, "") == 0) {
         std::cout << hash << std::endl;
         MessageBoxA(NULL, hash, "Define SETSAIL_HASH in CMakeLists.txt!", MB_OK | MB_SERVICE_NOTIFICATION);
-        exit(1);
+        std::exit(1);
     }
     
     // Let the user know if the binary they have is not the expected version and then bail.
     if(strcmp(EXE_HASH, hash) != 0) {
         std::cout << hash << " does not match expected " << EXE_HASH << std::endl;
         MessageBoxA(NULL, "Your " EXE_NAME " hash does not match expected.\nCheck you have the correct version.", "Hash mismatch!", MB_OK | MB_SERVICE_NOTIFICATION);
-        exit(1);
+        std::exit(1);
     }
 }
 
@@ -97,10 +98,7 @@ bool Inject_Dll(const char *dllname, HANDLE hProcess)
 
     if (!(exe_header.FileHeader.Characteristics & IMAGE_FILE_DLL)) {
         // printf("NE char is %x",exe_header.FileHeader.Characteristics);
-        std::ios state(nullptr);
-        state.copyfmt(std::cout);
         std::cout << "NE char is: " << std::hex << exe_header.FileHeader.Characteristics << std::endl;
-        std::cout.copyfmt(state);
         throw "dll file does not have correct format";
     }
 
@@ -220,7 +218,6 @@ void Inject_Loader(const char *path, const char *dllname, char *args)
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    std::ios::sync_with_stdio(false);
     Check_Hash();
     Inject_Loader(EXE_NAME, DLL_NAME, Make_Args(lpCmdLine));
 
