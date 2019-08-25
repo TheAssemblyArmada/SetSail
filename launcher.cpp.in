@@ -218,8 +218,12 @@ void Inject_Loader(const char *path, const char *dllname, char *args)
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+#ifndef __WATCOMC__
+    AttachConsole(ATTACH_PARENT_PROCESS);
+#endif
     Check_Hash();
     Inject_Loader(EXE_NAME, DLL_NAME, Make_Args(lpCmdLine));
+    Sleep(1000);
 
     return 0;
 }
