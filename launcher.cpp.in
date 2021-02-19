@@ -25,11 +25,11 @@
 #pragma comment(linker, "/subsystem:windows /ENTRY:WinMainCRTStartup")
 
 // Define the point to stall at while the DLL loads, normally the programs entry point.
-#define EXE_ENTRY @SETSAIL_ENTRY@
+#define EXE_ENTRY @SETSAIL_ENTRYPOINT@
 
 // Define the EXE to launch and the DLL to inject.
-#define EXE_NAME "@SETSAIL_EXE@"
-#define DLL_NAME "@SETSAIL_DLL@"
+#define EXE_NAME "@SETSAIL_EXENAME@"
+#define DLL_NAME "@SETSAIL_DLLNAME@"
 
 // Define the hash to compare against.
 #define EXE_HASH "@SETSAIL_HASH@"
