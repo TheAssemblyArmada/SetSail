@@ -122,7 +122,7 @@ bool Inject_Dll(const char *dllname, HANDLE hProcess)
 
     // Clean up
     CloseHandle(hThread);
-    VirtualFreeEx(hProcess, pLibRemote, sizeof(szLibPath), MEM_RELEASE);
+    VirtualFreeEx(hProcess, pLibRemote, 0, MEM_RELEASE);
 
     // LoadLibrary return is 0 on failure.
     return hLibModule != 0;
