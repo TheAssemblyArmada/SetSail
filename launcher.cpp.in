@@ -145,7 +145,8 @@ void Inject_Loader(const char *path, const char *dllname, char *args)
     StartupInfo.cb = sizeof(StartupInfo);
 
     // attempt to load the specified target in suspended state
-    if (CreateProcessA(path, args, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &StartupInfo, &ProcessInformation)) {
+    if (CreateProcessA(path, args, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &StartupInfo, &ProcessInformation))
+        != FALSE) {
         HANDLE hProcess(ProcessInformation.hProcess);
 
         // wait for the process to done
@@ -203,6 +204,9 @@ void Inject_Loader(const char *path, const char *dllname, char *args)
 
             // you are ready to go
             ResumeThread(ProcessInformation.hThread);
+
+            CloseHandle(ProcessInformation.hProcess);
+            CloseHandle(ProcessInformation.hThread);
         } catch (...) {
             // terminate the newly spawned process
             TerminateProcess(hProcess, -1);
@@ -211,8 +215,9 @@ void Inject_Loader(const char *path, const char *dllname, char *args)
             throw;
         }
     } else {
-        // are you sure this is a valid target ?
-        throw "unable to load the specified executable";
+        char szMessage[256];
+        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, 0, GetLastError(), 0, szMessage, sizeof(szMessage), NULL);
+        MessageBoxA(NULL, szMessage, "Error", MB_OK);
     }
 }
 
