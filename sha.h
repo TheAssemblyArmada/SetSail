@@ -53,7 +53,7 @@ private:
     SHADigest m_digest;
     uint32_t m_processedBytes;
     uint32_t m_unprocessedBytes;
-    char m_messageBlock[SHA_BLOCK_LENGTH]; // this is also knows as 'bytes' in other implimentions
+    char m_messageBlock[SHA_BLOCK_LENGTH]; // this is also knows as 'bytes' in other implementations
 };
 
 #endif // SHA_H

@@ -33,6 +33,9 @@ SHAEngine::SHAEngine() : m_computed(false), m_processedBytes(0), m_unprocessedBy
     m_digest.H2 = 0x98BADCFE;
     m_digest.H3 = 0x10325476;
     m_digest.H4 = 0xC3D2E1F0;
+
+    memset(&m_finalDigest, 0, sizeof(m_finalDigest));
+    memset(m_messageBlock, 0, sizeof(m_messageBlock));
 }
 
 SHAEngine::~SHAEngine()
@@ -150,11 +153,11 @@ int SHAEngine::Result(void *output)
 
         // format the digest into the correct byte order, big endian
         memcpy(&m_finalDigest, &digest, sizeof(m_finalDigest));
-        finalp = reinterpret_cast<uint32_t *>(&m_finalDigest.H0);
-
-        for (int i = 0; i < 5; ++i) {
-            finalp[i] = htobe32(finalp[i]);
-        }
+        m_finalDigest.H0 = htobe32(m_finalDigest.H0);
+        m_finalDigest.H1 = htobe32(m_finalDigest.H1);
+        m_finalDigest.H2 = htobe32(m_finalDigest.H2);
+        m_finalDigest.H3 = htobe32(m_finalDigest.H3);
+        m_finalDigest.H4 = htobe32(m_finalDigest.H4);
 
         m_computed = true;
         memcpy(output, &m_finalDigest, SHA_DIGEST_LENGTH);
